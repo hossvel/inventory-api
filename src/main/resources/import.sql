@@ -1,0 +1,2 @@
+-- INSERT INTO category (`id`,`nombre`, `apellido`) VALUES (1,'Gaseosa', 'Gaseosa');
+-- INSERT INTO category (`id`,`nombre`, `apellido`) VALUES (2,'Golosina', 'Gaseosa');
