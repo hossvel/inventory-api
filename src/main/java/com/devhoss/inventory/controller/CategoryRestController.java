@@ -1,61 +1,75 @@
 package com.devhoss.inventory.controller;
 
 
-import com.devhoss.inventory.models.Category;
-import com.devhoss.inventory.service.ICategoryService;
+import com.devhoss.inventory.model.Category;
+import com.devhoss.inventory.response.CategoryResponseRest;
+import com.devhoss.inventory.services.ICategoryService;
+import com.devhoss.inventory.util.CategoryExcelExporter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.io.IOException;
 
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
-@RequestMapping("/api/v1/categories")
+@RequestMapping("/api/v1")
 public class CategoryRestController {
 
     @Autowired
-    private ICategoryService iCategoryService;
+    private ICategoryService categoryService;
 
-    @GetMapping
-    public List<Category> findAll(){
-        return iCategoryService.findAll();
+    // get de todas las categorias
+    @GetMapping("/categories")
+    public ResponseEntity<CategoryResponseRest> searchCategories() {
+
+        ResponseEntity<CategoryResponseRest> response = categoryService.search();
+        return response;
+    }
+
+    // get de una categoria por id
+    @GetMapping("/categories/{id}")
+    public ResponseEntity<CategoryResponseRest> searchCategoriesById(@PathVariable Long id) {
+
+        ResponseEntity<CategoryResponseRest> response = categoryService.searchById(id);
+        return response;
+    }
+
+    @PostMapping("/categories")
+    public ResponseEntity<CategoryResponseRest> save(@RequestBody Category category) {
+
+        ResponseEntity<CategoryResponseRest> response = categoryService.save(category);
+        return response;
+    }
+
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<CategoryResponseRest> update(@RequestBody Category category, @PathVariable Long id) {
+
+        ResponseEntity<CategoryResponseRest> response = categoryService.update(category, id);
+        return response;
+    }
+
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity<CategoryResponseRest> delete(@PathVariable Long id) {
+
+        ResponseEntity<CategoryResponseRest> response = categoryService.deleteById(id);
+        return response;
+    }
+
+    @GetMapping("/categories/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=categorias.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        ResponseEntity<CategoryResponseRest> categoryResponse = categoryService.search();
+        CategoryExcelExporter excelExporter = new CategoryExcelExporter(categoryResponse.getBody().getCategoryResponse().getCategory());
+        excelExporter.export(response);
+
     }
 
 
 
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Category save(@RequestBody Category category){
-        return iCategoryService.save(category);
-    }
-/*
-    @GetMapping("/{id}")
-    public ResponseEntity<Empleado> getCategoryById(@PathVariable("id") UUID id){
-        System.out.println(id);
-        return iempleadoService.getEmpleadoById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable("id") UUID id, @RequestBody Empleado empleado){
-        return iempleadoService.getEmpleadoById(id)
-                .map(empleadoGuardado -> {
-            empleadoGuardado.setNombre(empleado.getNombre());
-            empleadoGuardado.setApellido(empleado.getApellido());
-            empleadoGuardado.setEmail(empleado.getEmail());
-            empleadoGuardado.setDni(empleado.getDni());
-
-            Empleado empleadoActualizado = iempleadoService.updateEmpleado(empleadoGuardado);
-            return new ResponseEntity<>(empleadoActualizado,HttpStatus.OK);
-        })
-        .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarEmpleado(@PathVariable("id") UUID id){
-        iempleadoService.deleteEmpleado(id);
-        return new ResponseEntity<String>("Empleado eliminado exitosamente",HttpStatus.OK);
-    }
-    */
 }
