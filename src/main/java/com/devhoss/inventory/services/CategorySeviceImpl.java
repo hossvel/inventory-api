@@ -1,6 +1,7 @@
 package com.devhoss.inventory.services;
 
 import com.devhoss.inventory.model.Category;
+import com.devhoss.inventory.repository.ICategoryRepository;
 import com.devhoss.inventory.response.CategoryResponseRest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.util.Optional;
 public class CategorySeviceImpl implements ICategoryService{
 
     @Autowired
-    private com.devhoss.inventory.repository.ICategoryRepository categoryDao;
+    private ICategoryRepository categoryDao;
 
     @Override
     @Transactional(readOnly = true)

@@ -14,14 +14,14 @@ import java.io.IOException;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/categories")
 public class CategoryRestController {
 
     @Autowired
     private ICategoryService categoryService;
 
     // get de todas las categorias
-    @GetMapping("/categories")
+    @GetMapping
     public ResponseEntity<CategoryResponseRest> searchCategories() {
 
         ResponseEntity<CategoryResponseRest> response = categoryService.search();
@@ -29,35 +29,35 @@ public class CategoryRestController {
     }
 
     // get de una categoria por id
-    @GetMapping("/categories/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CategoryResponseRest> searchCategoriesById(@PathVariable Long id) {
 
         ResponseEntity<CategoryResponseRest> response = categoryService.searchById(id);
         return response;
     }
 
-    @PostMapping("/categories")
+    @PostMapping
     public ResponseEntity<CategoryResponseRest> save(@RequestBody Category category) {
 
         ResponseEntity<CategoryResponseRest> response = categoryService.save(category);
         return response;
     }
 
-    @PutMapping("/categories/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseRest> update(@RequestBody Category category, @PathVariable Long id) {
 
         ResponseEntity<CategoryResponseRest> response = categoryService.update(category, id);
         return response;
     }
 
-    @DeleteMapping("/categories/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<CategoryResponseRest> delete(@PathVariable Long id) {
 
         ResponseEntity<CategoryResponseRest> response = categoryService.deleteById(id);
         return response;
     }
 
-    @GetMapping("/categories/export/excel")
+    @GetMapping("/export/excel")
     public void exportToExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         String headerKey = "Content-Disposition";

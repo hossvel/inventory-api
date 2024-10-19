@@ -1,9 +1,12 @@
 package com.devhoss.inventory.services;
 import com.devhoss.inventory.model.Category;
 import com.devhoss.inventory.model.Product;
+import com.devhoss.inventory.repository.ICategoryRepository;
+import com.devhoss.inventory.repository.IProductRepository;
 import com.devhoss.inventory.response.ProductResponseRest;
 
 import com.devhoss.inventory.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,14 +19,10 @@ import java.util.Optional;
 @Service
 public class ProductServiceImpl implements IProductService{
 
-    private com.devhoss.inventory.repository.ICategoryRepository categoryDao;
-
-    private com.devhoss.inventory.repository.IProductRepository productDao;
-
-    public ProductServiceImpl(com.devhoss.inventory.repository.ICategoryRepository categoryDao, com.devhoss.inventory.repository.IProductRepository productDao) {
-        this.categoryDao = categoryDao;
-        this.productDao = productDao;
-    }
+    @Autowired
+    private ICategoryRepository categoryDao;
+    @Autowired
+    private IProductRepository productDao;
 
     @Override
     @Transactional
@@ -174,6 +173,7 @@ public class ProductServiceImpl implements IProductService{
 
             }else {
                 response.setMetadata("Respuesta nok", "-1", "Producto no encontrado");
+                response.getProduct().setProducts(list);
                 return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
             }
 
