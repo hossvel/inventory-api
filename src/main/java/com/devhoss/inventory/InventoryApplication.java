@@ -20,7 +20,7 @@ public class InventoryApplication {
 		SpringApplication.run(InventoryApplication.class, args);
 	}
 
-
+/*
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -62,5 +62,5 @@ public class InventoryApplication {
 			userRepository.save(userEntity3);
 
 		};
-	}
+	}*/
 }
